@@ -3,6 +3,8 @@ import React, { useState } from "react";
 function Task() {
   const [task, setTask] = useState([]);
   const [newTask, setNewTask] = useState("");
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editedTask, setEditedTask] = useState("");
 
   const addTask = () => {
     if (newTask.trim() !== "") {
@@ -23,6 +25,19 @@ function Task() {
     );
   };
 
+  const startEditing = (index, text) => {
+    setEditedTask(text);
+    setEditingIndex(index);
+  };
+
+  const saveEdit = (index) => {
+    if (editedTask.trim() !== "") {
+      const updatedTasks = [...task];
+      updatedTasks[index].text = editedTask;
+      setTask(updatedTasks);
+      setEditingIndex(null);
+    }
+  };
   return (
     <div className="task-container">
       <input
@@ -40,14 +55,28 @@ function Task() {
       <ul className="task-list">
         {task.map((task, index) => (
           <li key={index} className="task-item">
-            <span
-              className={task.completed ? "completed" : ""}
-              onClick={() => toggleCompletion(index)}
-            >
-              {task.text}
-            </span>
-
-            <button onClick={() => toggleCompletion(index)}>✔️</button>
+            {editingIndex == index ? (
+              <input
+                type="text"
+                className="edit-input"
+                value={editedTask}
+                onChange={(e) => setEditedTask(e.target.value)}
+              ></input>
+            ) : (
+              <span
+                className={task.completed ? "completed" : ""}
+                onClick={() => toggleCompletion(index)}
+              >
+                {task.text}
+              </span>
+            )}
+            {editingIndex === index ? (
+              <button onClick={() => saveEdit(index)}>save edit</button>
+            ) : (
+              <button onClick={() => startEditing(index, task.text)}>
+                edit
+              </button>
+            )}
             <button onClick={() => deleteTask(index)}>❌</button>
           </li>
         ))}

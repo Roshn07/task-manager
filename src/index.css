@@ -76,3 +76,9 @@ body {
   text-decoration: line-through;
   color: gray;
 }
+
+.edit-input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
